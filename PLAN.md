@@ -764,19 +764,36 @@ const BLOCK_REGISTRY = {
   `*.vercel.app`, plus `APP_HOSTS`
 - `/p/[id]` preview now shows the latest version (draft or published)
 
-### Phase 6 — Dashboard
-- Projects list (per agency)
-- Project detail: status timeline, PreviewFrame iframe, RevisionChat
-- "Send preview to client" button (internal QA gate)
-- "Freigeben" button
+### ✓ Phase 6 — Dashboard (done)
+- Supabase email/password auth: `/login` (sign in + sign up), `/auth/signout`,
+  session refresh + dashboard gate in middleware (`lib/supabase/middleware.ts`)
+- `(dashboard)` route group with branded shell (`layout.tsx`): requires an
+  authenticated user + agency, renders white-label/agency branding
+- Projects list (`/`): per-agency, RLS-scoped, status badges
+- Project detail (`/projects/[id]`): status timeline (`ProjectStatus`),
+  live `PreviewFrame` (desktop/mobile, refresh-on-revision), `RevisionChat`,
+  combined in `ProjectWorkspace`
+- New project flow (`/projects/new` + `NewProjectForm`): creates the project
+  (`POST /api/projects`) and submits the intake brief in one step → pipeline
+- "Vorschau an Kunden senden" (`POST /api/projects/[id]/send-preview`,
+  review → preview) and "Freigeben" (existing approve endpoint, optional domain)
+  via `ProjectActions`
 
-### Phase 7 — Agency Mode
-- `003_agency_mode.sql` migration
-- Agency signup + onboarding
-- `agency_members` invite flow
-- White-label config UI (logo, domain, email)
-- RLS policy update for agency isolation
-- Middleware: custom portal domain → agency dashboard
+### ✓ Phase 7 — Agency Mode (done)
+- `003_agency_mode.sql`: agencies, agency_members, white_label_configs;
+  projects gain `agency_id`/`created_by`/`client_name`/`client_email`; legacy
+  `customer_id` backfilled into a personal agency per owner
+- Auto-enroll trigger (`enroll_agency_owner`) + `user_agency_ids()` /
+  `managed_agency_ids()` SECURITY DEFINER helpers
+- Agency-scoped RLS across all tables (members read/edit, owners/admins
+  create/delete); published-config public read retained
+- Agency signup/onboarding (`/onboarding` + `POST /api/agency`)
+- Team invite flow (`/settings` + `MembersManager` + `POST/DELETE /api/agency/members`,
+  service-role roster writes, owner-protected)
+- White-label config UI (`WhiteLabelForm` + `POST /api/agency/white-label`):
+  logo, portal domain, from/reply-to email
+- Middleware: white-label portal domains (`lib/agency/portal.ts`) resolve to the
+  branded dashboard; other custom domains still render the live client site
 
 ---
 

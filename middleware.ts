@@ -1,14 +1,17 @@
 import { NextRequest, NextResponse } from "next/server"
+import { updateSession } from "@/lib/supabase/middleware"
+import { resolvePortalAgency } from "@/lib/agency/portal"
 
 /**
- * Hostname-based routing for live customer sites.
+ * Hostname-based routing + dashboard auth.
  *
- * The dashboard/app is served on its own host(s); every other hostname is a
- * customer's custom domain. Those requests are rewritten to `/site/[host]`,
- * which renders the project's published SiteConfig (resolved by domain).
- *
- * App hosts: the host of NEXT_PUBLIC_BASE_URL, localhost, and any *.vercel.app
- * (preview + production aliases). Override/extend via APP_HOSTS (comma-sep).
+ * Three kinds of host:
+ *   1. App hosts (NEXT_PUBLIC_BASE_URL host, localhost, *.vercel.app, APP_HOSTS)
+ *      → the dashboard. Auth session is refreshed and dashboard routes are gated.
+ *   2. White-label portal domains (white_label_configs.custom_domain)
+ *      → also the dashboard, branded for that agency. Same auth handling.
+ *   3. Any other custom domain → a client's live site, rewritten to /site/[host],
+ *      which renders the project's published SiteConfig.
  */
 function appHosts(): string[] {
   const hosts = new Set<string>(["localhost", "127.0.0.1"])
@@ -36,14 +39,21 @@ function isAppHost(host: string): boolean {
   return appHosts().includes(h)
 }
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const host = request.headers.get("host") ?? ""
 
+  // App host → dashboard with auth.
   if (!host || isAppHost(host)) {
-    return NextResponse.next()
+    return updateSession(request)
   }
 
-  // Custom domain → render the live site for this hostname.
+  // White-label portal domain → branded dashboard, with auth.
+  const portalAgencyId = await resolvePortalAgency(host)
+  if (portalAgencyId) {
+    return updateSession(request)
+  }
+
+  // Otherwise a client's custom domain → render its live site.
   const url = request.nextUrl.clone()
   url.pathname = `/site/${encodeURIComponent(host.split(":")[0])}`
   return NextResponse.rewrite(url)
