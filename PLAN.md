@@ -744,11 +744,25 @@ const BLOCK_REGISTRY = {
 - RevisionChat component (`components/dashboard/RevisionChat.tsx`): chat UI,
   applied-intent activity log, German copy, `onRevised` hook for preview refresh
 
-### Phase 5 — Approval + Deploy
-- `/api/projects/[id]/approve` → publish config
-- `lib/vercel/api.ts` — assign custom domain via Vercel REST API
-- `/api/pipeline/deploy`
-- Next.js middleware: hostname → project_id → published config
+### ✓ Phase 5 — Approval + Deploy (done)
+- `/api/projects/[id]/approve` ("Freigeben"): RLS-authorized, promotes the
+  latest draft to the single `published` config (demotes prior published),
+  optionally reserves a custom domain on the project, advances to `approved`,
+  and enqueues the deploy step
+- `lib/vercel/api.ts` — attach/verify a custom domain on the Vercel project via
+  the REST API (idempotent on `domain_already_in_use`; `isVercelConfigured`)
+- `/api/pipeline/deploy` — QStash-verified, idempotent (`isAtOrPast(_, "live")`);
+  attaches the domain, records a `deployments` row, advances to `live`. Graceful
+  when no domain / Vercel unconfigured; 4xx Vercel errors fail the project,
+  5xx/network errors throw so QStash retries
+- `lib/pipeline/published.ts` — resolve published config by hostname
+  (`www.` ↔ apex), service-role lookup
+- `app/site/[host]` — live renderer (published config only), same renderer as
+  the `/p/[id]` preview
+- `middleware.ts` — hostname routing: app hosts pass through, custom domains
+  rewrite to `/site/[host]`. App hosts = NEXT_PUBLIC_BASE_URL host, localhost,
+  `*.vercel.app`, plus `APP_HOSTS`
+- `/p/[id]` preview now shows the latest version (draft or published)
 
 ### Phase 6 — Dashboard
 - Projects list (per agency)

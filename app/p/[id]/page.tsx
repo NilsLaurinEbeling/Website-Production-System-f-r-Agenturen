@@ -16,11 +16,13 @@ async function getSiteConfig(id: string) {
   const { createClient } = await import("@/lib/supabase/server")
   const supabase = await createClient()
 
+  // The preview is the owner's working view: always the latest version,
+  // whether it's still a draft or has since been published. The public live
+  // site is served separately via middleware → /site/[host] (published only).
   const { data, error } = await supabase
     .from("site_configs")
     .select("config")
     .eq("project_id", id)
-    .eq("status", "draft")
     .order("version", { ascending: false })
     .limit(1)
     .single()
