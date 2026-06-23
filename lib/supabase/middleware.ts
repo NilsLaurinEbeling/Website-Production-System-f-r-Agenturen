@@ -41,6 +41,7 @@ export async function updateSession(request: NextRequest): Promise<NextResponse>
     path.startsWith("/login") ||
     path.startsWith("/auth") ||
     path.startsWith("/p/") ||
+    path.startsWith("/start/") ||
     path.startsWith("/site/")
 
   if (!user && !isPublic) {
