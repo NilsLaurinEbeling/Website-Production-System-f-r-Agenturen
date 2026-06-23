@@ -1,7 +1,9 @@
 import { notFound } from "next/navigation"
+import type { Metadata } from "next"
 import { SiteConfigSchema } from "@/lib/schema/site-config"
 import { ThemeProvider } from "@/components/renderer/ThemeProvider"
 import { SiteRenderer } from "@/components/renderer/SiteRenderer"
+import { SeoScripts } from "@/components/renderer/SeoHead"
 import { SEED_CONFIG } from "@/lib/seed-config"
 
 interface Props {
@@ -9,7 +11,6 @@ interface Props {
 }
 
 async function getSiteConfig(id: string) {
-  // Seed: project id "seed" renders the test config without a DB
   if (id === "seed") return SEED_CONFIG
 
   const { createClient } = await import("@/lib/supabase/server")
@@ -27,9 +28,26 @@ async function getSiteConfig(id: string) {
   if (error || !data) return null
 
   const parsed = SiteConfigSchema.safeParse(data.config)
-  if (!parsed.success) return null
+  return parsed.success ? parsed.data : null
+}
 
-  return parsed.data
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { id } = await params
+  const config = await getSiteConfig(id)
+  if (!config) return {}
+
+  const { title, description, og_image_url, favicon_emoji } = config.metadata
+  return {
+    title,
+    description,
+    ...(favicon_emoji && { icons: { icon: `data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>${favicon_emoji}</text></svg>` } }),
+    openGraph: {
+      title,
+      description,
+      ...(og_image_url && { images: [{ url: og_image_url }] }),
+    },
+    ...(config.seo?.noindex && { robots: { index: false, follow: false } }),
+  }
 }
 
 export default async function PreviewPage({ params }: Props) {
@@ -39,9 +57,12 @@ export default async function PreviewPage({ params }: Props) {
   if (!config) notFound()
 
   return (
-    <ThemeProvider theme={config.theme}>
-      <SiteRenderer config={config} />
-    </ThemeProvider>
+    <>
+      <SeoScripts config={config} />
+      <ThemeProvider theme={config.theme}>
+        <SiteRenderer config={config} />
+      </ThemeProvider>
+    </>
   )
 }
 

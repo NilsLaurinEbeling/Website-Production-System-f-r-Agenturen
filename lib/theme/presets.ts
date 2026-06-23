@@ -1,0 +1,136 @@
+import { type Theme, type ThemeStyle } from "@/lib/schema/site-config"
+
+type PresetTheme = Omit<Theme, "style">
+
+export const THEME_PRESETS: Record<ThemeStyle, PresetTheme> = {
+  luxury: {
+    colors: {
+      primary:    "#c9a96e",
+      secondary:  "#1a1208",
+      accent:     "#2d2010",
+      background: "#0d0d0d",
+      text:       "#f5f0e8",
+      muted:      "#8b7355",
+    },
+    typography: { headingFont: "playfair", bodyFont: "lato", scale: "spacious" },
+    radius: "none",
+    shadow: "none",
+  },
+  startup: {
+    colors: {
+      primary:    "#6366f1",
+      secondary:  "#4f46e5",
+      accent:     "#eef2ff",
+      background: "#ffffff",
+      text:       "#111827",
+      muted:      "#6b7280",
+    },
+    typography: { headingFont: "inter", bodyFont: "inter", scale: "default" },
+    radius: "lg",
+    shadow: "md",
+  },
+  craft: {
+    colors: {
+      primary:    "#7c4a1e",
+      secondary:  "#a86a2d",
+      accent:     "#fdf6ee",
+      background: "#fafaf8",
+      text:       "#2c1a0e",
+      muted:      "#8a6a4a",
+    },
+    typography: { headingFont: "playfair", bodyFont: "lato", scale: "default" },
+    radius: "sm",
+    shadow: "sm",
+  },
+  medical: {
+    colors: {
+      primary:    "#0891b2",
+      secondary:  "#0e7490",
+      accent:     "#ecfeff",
+      background: "#f8fafc",
+      text:       "#0f172a",
+      muted:      "#64748b",
+    },
+    typography: { headingFont: "dm-sans", bodyFont: "inter", scale: "default" },
+    radius: "md",
+    shadow: "sm",
+  },
+  legal: {
+    colors: {
+      primary:    "#1e3a5f",
+      secondary:  "#162d4a",
+      accent:     "#f0f4f8",
+      background: "#fafafa",
+      text:       "#1a1a2e",
+      muted:      "#64748b",
+    },
+    typography: { headingFont: "playfair", bodyFont: "source-sans", scale: "spacious" },
+    radius: "none",
+    shadow: "none",
+  },
+  restaurant: {
+    colors: {
+      primary:    "#b45309",
+      secondary:  "#92400e",
+      accent:     "#fef3c7",
+      background: "#fffbf5",
+      text:       "#1c1917",
+      muted:      "#78716c",
+    },
+    typography: { headingFont: "playfair", bodyFont: "lato", scale: "default" },
+    radius: "sm",
+    shadow: "md",
+  },
+  tech: {
+    colors: {
+      primary:    "#22d3ee",
+      secondary:  "#06b6d4",
+      accent:     "#083344",
+      background: "#0f172a",
+      text:       "#f1f5f9",
+      muted:      "#64748b",
+    },
+    typography: { headingFont: "space-grotesk", bodyFont: "inter", scale: "compact" },
+    radius: "md",
+    shadow: "dramatic",
+  },
+  minimal: {
+    colors: {
+      primary:    "#000000",
+      secondary:  "#171717",
+      accent:     "#f5f5f5",
+      background: "#ffffff",
+      text:       "#171717",
+      muted:      "#737373",
+    },
+    typography: { headingFont: "inter", bodyFont: "inter", scale: "spacious" },
+    radius: "none",
+    shadow: "none",
+  },
+  bold: {
+    colors: {
+      primary:    "#dc2626",
+      secondary:  "#b91c1c",
+      accent:     "#fef2f2",
+      background: "#fafafa",
+      text:       "#0a0a0a",
+      muted:      "#6b7280",
+    },
+    typography: { headingFont: "space-grotesk", bodyFont: "inter", scale: "compact" },
+    radius: "sm",
+    shadow: "dramatic",
+  },
+  modern: {
+    colors: {
+      primary:    "#7c3aed",
+      secondary:  "#6d28d9",
+      accent:     "#f5f3ff",
+      background: "#fafafa",
+      text:       "#0f0a1e",
+      muted:      "#6b7280",
+    },
+    typography: { headingFont: "dm-sans", bodyFont: "inter", scale: "default" },
+    radius: "lg",
+    shadow: "md",
+  },
+}
