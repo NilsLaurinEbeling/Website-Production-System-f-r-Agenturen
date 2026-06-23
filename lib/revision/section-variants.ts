@@ -1,0 +1,23 @@
+/** Section types and their valid variants — single source for revision logic. */
+export const SECTION_VARIANTS: Record<string, string[]> = {
+  hero:           ["center", "split", "minimal", "editorial", "saas", "luxury", "agency", "local-business"],
+  features:       ["grid", "alternating", "tabs", "cards", "checklist"],
+  testimonials:   ["cards", "carousel", "wall", "quote"],
+  pricing:        ["cards", "table", "list"],
+  about:          ["text", "split"],
+  cta:            ["centered", "banner", "newsletter"],
+  footer:         ["minimal", "columns", "dark"],
+  faq:            ["accordion", "two-column"],
+  team:           ["grid", "list", "carousel"],
+  gallery:        ["masonry", "grid", "carousel"],
+  "contact-form": ["simple", "split"],
+  "case-studies": ["cards", "featured"],
+  logos:          ["strip", "grid"],
+  timeline:       ["vertical", "horizontal"],
+  process:        ["steps", "numbered"],
+  services:       ["cards", "list", "grid"],
+  "blog-preview": ["cards", "featured"],
+  map:            ["embedded"],
+  stats:          ["centered", "grid", "banner"],
+  "lead-magnet":  ["centered", "split"],
+}

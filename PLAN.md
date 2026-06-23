@@ -729,12 +729,20 @@ const BLOCK_REGISTRY = {
 - Service-role Supabase admin client for pipeline writes
 - DesignBriefing Zod schema
 
-### Phase 4 — Revision Loop
-- Intent classifier: Haiku call → RevisionIntent[]
-- Config patcher: all deterministic intents
-- `/api/projects/[id]/revise` — classify → patch → new draft version
-- AI intents: section.add (Sonnet), section.regenerate_copy (Sonnet)
-- RevisionChat component in dashboard
+### ✓ Phase 4 — Revision Loop (done)
+- Intent classifier (`lib/revision/intent-classifier.ts`): Haiku call →
+  RevisionIntent[], steered by a compact config summary; Zod-validated, empty
+  on ambiguity
+- Config patcher: all deterministic intents (Phase 2)
+- AI intents (`lib/revision/ai-intents.ts`): section.add (Sonnet) and
+  section.regenerate_copy (Sonnet), each Zod-validated with forced type/variant
+- Apply orchestrator (`lib/revision/apply.ts`): runs intents in order
+  (deterministic + AI), per-intent failures are skipped and reported
+- `/api/projects/[id]/revise` — RLS-authorized, classify → apply → Zod.parse →
+  new draft version (version++), records the revision; returns to a reviewable
+  state. AI section intents share one `section-variants` source of truth.
+- RevisionChat component (`components/dashboard/RevisionChat.tsx`): chat UI,
+  applied-intent activity log, German copy, `onRevised` hook for preview refresh
 
 ### Phase 5 — Approval + Deploy
 - `/api/projects/[id]/approve` → publish config
