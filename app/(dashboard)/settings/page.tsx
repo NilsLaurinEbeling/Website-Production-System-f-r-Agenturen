@@ -4,6 +4,8 @@ import { createAdminClient } from "@/lib/supabase/admin"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { WhiteLabelForm } from "@/components/dashboard/WhiteLabelForm"
 import { MembersManager, type MemberRow } from "@/components/dashboard/MembersManager"
+import { IntakeLinkCard } from "@/components/dashboard/IntakeLinkCard"
+import { intakeUrl } from "@/lib/agency/intake"
 
 export default async function SettingsPage() {
   const ctx = await getAgencyContext()
@@ -38,6 +40,8 @@ export default async function SettingsPage() {
           Agentur „{ctx.agency.name}“ · deine Rolle: {ctx.role}
         </p>
       </div>
+
+      <IntakeLinkCard url={intakeUrl(ctx.agency.slug)} />
 
       <Card>
         <CardHeader>

@@ -795,6 +795,17 @@ const BLOCK_REGISTRY = {
 - Middleware: white-label portal domains (`lib/agency/portal.ts`) resolve to the
   branded dashboard; other custom domains still render the live client site
 
+### ✓ Phase 8 — Client self-serve intake (done)
+- Public, white-label landing page (`/start/[slug]` + `app/start/[slug]/page.tsx`):
+  resolves the agency by `slug` via the service role (`lib/agency/intake.ts`),
+  renders the agency's brand + a friendly brief form (`ClientIntakeForm`)
+- Public intake API (`POST /api/intake/[slug]`): validates client info + brief,
+  creates a self-serve project (`created_by` null) inside the agency, stores the
+  brief, and kicks off the pipeline — no client account required
+- Middleware: `/start/` is public (no auth gate)
+- Dashboard: shareable intake link surfaced in `/settings` (`IntakeLinkCard`);
+  submitted requests appear in the agency's RLS-scoped project list
+
 ---
 
 ## Key Invariants
