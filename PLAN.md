@@ -719,12 +719,15 @@ const BLOCK_REGISTRY = {
 - Update seed config to demonstrate 3+ new sections
 - SEO renderer: Schema.org JSON-LD, OG tags, sitemap.xml
 
-### Phase 3 — Pipeline
-- `/api/pipeline/generate` — Sonnet structured output → SiteConfig
-- `/api/projects/[id]/brief` — save brief, enqueue pipeline
+### ✓ Phase 3 — Pipeline (done)
+- `/api/pipeline/validate-brief` — Haiku schema + coherence gate
 - `/api/pipeline/research` — Sonnet + web_search → DesignBriefing
-- QStash signature verification middleware
-- Idempotency: check project.status before each step
+- `/api/pipeline/generate` — Sonnet structured output → SiteConfig (Zod-validated, self-correcting retry)
+- `/api/projects/[id]/brief` — save brief, enqueue pipeline
+- QStash signature verification (`withQStashVerification` wrapper)
+- Idempotency: `isAtOrPast(status, step)` guard at each step entry
+- Service-role Supabase admin client for pipeline writes
+- DesignBriefing Zod schema
 
 ### Phase 4 — Revision Loop
 - Intent classifier: Haiku call → RevisionIntent[]
