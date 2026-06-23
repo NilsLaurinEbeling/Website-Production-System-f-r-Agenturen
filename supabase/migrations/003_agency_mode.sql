@@ -154,9 +154,16 @@ ALTER TABLE white_label_configs ENABLE ROW LEVEL SECURITY;
 
 -- Agencies: members read; owners/admins update; any authenticated user may
 -- create an agency (they become the owner via the API).
+--
+-- The `owner_id = auth.uid()` branch is required for the create flow: the API
+-- inserts the agency with `RETURNING id`, and Postgres applies this SELECT
+-- policy to RETURNING rows. The owner's membership is only created by the
+-- AFTER INSERT trigger (which hasn't run when RETURNING is evaluated), so
+-- without this branch the new row would be invisible and the insert would fail
+-- with "new row violates row-level security policy".
 CREATE POLICY "members_read_agencies"
   ON agencies FOR SELECT
-  USING (id IN (SELECT public.user_agency_ids()));
+  USING (id IN (SELECT public.user_agency_ids()) OR owner_id = auth.uid());
 
 CREATE POLICY "managers_update_agencies"
   ON agencies FOR UPDATE
