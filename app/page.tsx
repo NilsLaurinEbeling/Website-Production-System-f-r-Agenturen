@@ -1,3 +1,5 @@
+"use client"
+
 import Link from "next/link"
 import { ArrowRight, Zap, Globe, BarChart3, Layers, CheckCircle, Star, ChevronRight, Sparkles, Clock, Shield, TrendingUp } from "lucide-react"
 
