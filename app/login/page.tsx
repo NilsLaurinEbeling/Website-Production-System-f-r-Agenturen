@@ -11,7 +11,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 function LoginForm() {
   const router = useRouter()
   const params = useSearchParams()
-  const next = params.get("next") || "/"
+  const next = params.get("next") || "/dashboard"
 
   const [mode, setMode] = useState<"signin" | "signup">("signin")
   const [email, setEmail] = useState("")
